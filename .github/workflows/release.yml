@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
-      - run: echo '::debug::github.event.pull_request'
-      - run: echo '::debug::github.event.pull_request.title'
+      - run: echo '::debug::${{ github.event.pull_request }}'
+      - run: echo '::debug::${{ github.event.pull_request.title }}'
       - uses: actions/checkout@v3
         with:
           persist-credentials: true
