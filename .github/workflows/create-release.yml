@@ -31,7 +31,7 @@ jobs:
       - run: echo "::debug::version is ${{ steps.version.outputs.version }}"
       - run: echo "::notice title="releasing"::${{ steps.version.outputs.version }}"
       - if: ${{ steps.version.outputs.version == '' }}
-        run: echo "::error ::Invalid version"
+        run: echo "::error ::Invalid version" && exit 1
       # - uses: actions/setup-node@v3  # is this needed???
       #   with:
       #     node-version-file: '.nvmrc'
