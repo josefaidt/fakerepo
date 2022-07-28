@@ -9,8 +9,7 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
-    # if: github.event.pull_request.merged == true
-    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, "release")
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, "release/")
     steps:
       - run: echo "${{ github.event.pull_request.head.ref }}"
       - run: echo "${{ github.event.pull_request.base.ref }}"
@@ -24,9 +23,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: true
-      - if: contains(${{ steps.tag.outputs.result }}, 'next')
+      - if: ${{ contains(${{ steps.tag.outputs.result }}, 'next') }}
         run: echo 'NEXT'
-      - if: "!contains(${{ steps.tag.outputs.result }}, 'next')"
+      - if: ${{ !contains(${{ steps.tag.outputs.result }}, 'next') }}
         run: echo "PRODUCTION"
       # - run: 'gh release create --target ${{ github.event.pull_request.head.ref }}'
 # https://github.com/orgs/community/discussions/26686#discussioncomment-3252850
