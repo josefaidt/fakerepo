@@ -13,6 +13,14 @@ jobs:
     steps:
       - run: echo '::debug::${{ github.event.pull_request }}'
       - run: echo '::debug::${{ github.event.pull_request.title }}'
+      - run: echo '::debug::${{ github.ref }}'
+      - name: Extract tag name
+        id: tag
+        uses: actions/github-script@0.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return context.payload.pull_request.title.replace(/release\: /, '');
       - uses: actions/checkout@v3
         with:
           persist-credentials: true
