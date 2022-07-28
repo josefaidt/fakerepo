@@ -31,8 +31,8 @@ jobs:
           else
             echo "::set-output name=version::$(pnpm version ${{ github.event.inputs.type }} --no-git-tag-version --preid next)"
           fi
-      - run: echo "::debug::version is ${{ steps.version.output.version }}"
-      - run: echo "::notice title="releasing"::${{ steps.version.output.version }}"
+      - run: echo "::debug::version is ${{ steps.version.outputs.version }}"
+      - run: echo "::notice title="releasing"::${{ steps.version.outputs.version }}"
       # - uses: actions/setup-node@v3  # is this needed???
       #   with:
       #     node-version-file: '.nvmrc'
@@ -40,16 +40,16 @@ jobs:
       # get version
       # - run: echo ::set-output
       - id: branch
-        run: echo "::set-output name=name::release/v${{ steps.version.output.version }}"
+        run: echo "::set-output name=name::release/v${{ steps.version.outputs.version }}"
       - name: Create release branch
-        run: git checkout -b ${{ steps.branch.output.name }}
+        run: git checkout -b ${{ steps.branch.outputs.name }}
       - name: Initialize mandatory git config
         run: |
           git config user.name "GitHub Actions"
           git config user.email noreply@github.com
           git add package.json
-          git commit -m '[automated] release ${{ steps.version.output.version }}'
-      - run: git push origin ${{ steps.branch.output.name }}
+          git commit -m '[automated] release ${{ steps.version.outputs.version }}'
+      - run: git push origin ${{ steps.branch.outputs.name }}
 # bumps version with `pnpm version...` (should this create the tag???)
 # if pnpm creates the tag, we need to push it to git _before_ running `gh release create...` to mitigate clashing version tags
 # or can set this to false https://docs.npmjs.com/cli/v8/commands/npm-version#git-tag-version
