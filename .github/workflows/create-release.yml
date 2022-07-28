@@ -19,6 +19,10 @@ jobs:
         with:
           persist-credentials: true
       - uses: pnpm/action-setup@v2.2.2
+      - name: set git config for pnpm version, git push
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email noreply@github.com
       - name: set-version
         id: version
         run: |
@@ -43,10 +47,8 @@ jobs:
         run: echo "::set-output name=name::release/${{ steps.version.outputs.version }}"
       - name: Create release branch
         run: git checkout -b ${{ steps.branch.outputs.name }}
-      - name: Initialize mandatory git config
+      - name: add and commit changes
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email noreply@github.com
           git add package.json
           git commit -m '[automated] release ${{ steps.version.outputs.version }}'
       - run: git push origin ${{ steps.branch.outputs.name }}
