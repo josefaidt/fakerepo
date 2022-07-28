@@ -28,6 +28,7 @@ jobs:
           else
             version=$(pnpm version ${{ github.event.inputs.type }} --preid next) --no-git-tag-version"
           fi
+          echo "VERSION IS $version"
           echo "::set-output name=version::$version"
       - run: echo "::debug::version is ${{ steps.version.outputs.version }}"
       - run: echo "::notice title="releasing"::${{ steps.version.outputs.version }}"
