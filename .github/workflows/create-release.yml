@@ -28,10 +28,9 @@ jobs:
         run: |
           if [ ${{ github.event.inputs.type }} != prerelease ]
           then
-            version=$(pnpm version ${{ github.event.inputs.type }})
+            version=$(pnpm version ${{ github.event.inputs.type }} --no-git-tag-version)
           else
-            # pnpm version ${{ github.event.inputs.type }} --preid next
-            version=$(pnpm version ${{ github.event.inputs.type }} --preid next)
+            version=$(pnpm version ${{ github.event.inputs.type }} --preid next --no-git-tag-version)
           fi
           echo $(git status)
           echo "VERSION IS $version"
@@ -49,7 +48,7 @@ jobs:
       - id: branch
         run: echo "::set-output name=name::release/${{ steps.version.outputs.version }}"
       - name: Create release branch
-        run: git switch -c ${{ steps.branch.outputs.name }}
+        run: git checkout -b ${{ steps.branch.outputs.name }}
       - run: echo $(git status)
       # this is not required when pnpm is creating the git tag
       # - name: add and commit changes
