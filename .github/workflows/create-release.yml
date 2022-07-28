@@ -62,4 +62,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: echo '${{ steps.pr.outputs.link }}'
-      - run: echo ::notice title="created"::${{ steps.pr.outputs.url }}
+      - run: echo ::notice title="created"::${{ steps.pr.outputs.link }}
