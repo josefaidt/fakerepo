@@ -24,10 +24,11 @@ jobs:
         run: |
           if [ ${{ github.event.inputs.type }} != prerelease ]
           then
-            echo "::set-output name=version::$(pnpm version ${{ github.event.inputs.type }})"
+            version=$(pnpm version ${{ github.event.inputs.type }})"
           else
-            echo "::set-output name=version::$(pnpm version ${{ github.event.inputs.type }} --preid next)"
+            version=$(pnpm version ${{ github.event.inputs.type }} --preid next) --no-git-tag-version"
           fi
+          echo "::set-output name=version::$version"
       - run: echo "::debug::version is ${{ steps.version.outputs.version }}"
       - run: echo "::notice title="releasing"::${{ steps.version.outputs.version }}"
       - if: ${{ steps.version.outputs.version == '' }}
