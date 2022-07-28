@@ -23,13 +23,14 @@ jobs:
           persist-credentials: false
       - uses: pnpm/action-setup@v2.2.2
       - name: set-version
-        if: ${{ github.event.inputs.type }} != 'prerelease'
         id: version
-        run: ::set-output name=version::pnpm version ${{ github.event.inputs.type }} --no-git-tag-version
-      - name: set-next-version
-        if: ${{ github.event.inputs.type }} == 'prerelease'
-        id: version
-        run: ::set-output name=version::pnpm version ${{ github.event.inputs.type }} --no-git-tag-version --preid next
+        run: |
+          if [ ${{ github.event.inputs.type }} != prerelease ]
+          then
+            echo "::set-output name=version::pnpm version ${{ github.event.inputs.type }} --no-git-tag-version)"
+          else
+            echo "::set-output name=version::pnpm version ${{ github.event.inputs.type }} --no-git-tag-version --preid next)"
+          fi
       - run: ::notice title="releasing"::${{ steps.version.output.version }}
       # - uses: actions/setup-node@v3  # is this needed???
       #   with:
