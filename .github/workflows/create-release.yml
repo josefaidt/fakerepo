@@ -52,7 +52,10 @@ jobs:
           git commit -m '[automated] release: ${{ steps.version.outputs.version }}'
       - run: git push origin ${{ steps.branch.outputs.name }}
       - id: pr
-        run: 'gh pr create --title "release: ${{ steps.version.outputs.version }}" --body "Automated PR created to release a new version of the project"'
+        run: |
+          url=$(gh pr create --title "release: ${{ steps.version.outputs.version }}" --body "Automated PR created to release a new version of the project")
+          echo ::set-output name=link::$url
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo '${{ steps.pr.outputs.result }}'
+      - run: echo '${{ steps.pr.outputs.link }}'
+      - run: echo "::notice title="created"::${{ steps.pr.outputs.url }}"
