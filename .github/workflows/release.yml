@@ -1,0 +1,24 @@
+name: release
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: true
+      - id: version
+        run: echo ::set-output name=version::${{ github.event.ref }}
+      - run: echo "::debug::${{ step.version.outputs.version }}"
+      - if: ${{ step.version.outputs.version }}
+        run: echo 'yes'
+      - if: contains(step.version.outputs.version, 'next')
+        run: echo 'yes'
+      - if: contains(${{ step.version.outputs.version }}, 'next')
+        run: echo 'yes'
+      # - run: 'gh release create --target ${{ github.event.pull_request.head.ref }}'
