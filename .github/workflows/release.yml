@@ -11,9 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true
     steps:
-      - run: echo '::debug::${{ github.event.pull_request }}'
-      - run: echo '::debug::${{ github.event.pull_request.title }}'
-      - run: echo '::debug::${{ github.ref }}'
       - name: Extract tag name
         id: tag
         uses: actions/github-script@0.2.0
@@ -21,35 +18,12 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             return context.payload.pull_request.title.replace(/release\: /, '');
-      - run: echo '::debug::${{ steps.tag.outputs.result }}'
       - uses: actions/checkout@v3
         with:
           persist-credentials: true
-      - id: version
-        run: echo ::set-output name=version::${{ github.event.ref }}
-      - run: echo "::debug::${{ github.ref }}"
-      - run: echo "::debug::${{ github.event.ref }}"
-      - run: echo "::debug::${{ steps.version.outputs.version }}"
-      - run: echo "::debug::${{ github.event.pull_request.head.ref }}"
-      - if: ${{ steps.version.outputs.version }}
-        run: echo 'yes'
-      - if: contains(steps.version.outputs.version, 'next')
-        run: echo 'yes'
-      - if: contains(${{ steps.version.outputs.version }}, 'next')
-        run: echo 'yes'
-      # - name: Create Release
-      #   id: create_release
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
-      #   with:
-      #     tag_name: ${{ github.ref }}
-      #     release_name: Release ${{ github.ref }}
-      #     body: |
-      #       Changes in this Release
-      #       - First Change
-      #       - Second Change
-      #     draft: false
-      #     prerelease: false
+      - if: contains(${{ steps.tag.outputs.result }}, 'next')
+        run: echo 'NEXT'
+      - if: contains(${{ steps.tag.outputs.result }}, 'next')
+        run: echo "PRODUCTION"
       # - run: 'gh release create --target ${{ github.event.pull_request.head.ref }}'
 # https://github.com/orgs/community/discussions/26686#discussioncomment-3252850
