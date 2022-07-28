@@ -9,6 +9,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    permissions:
+      contents: write
     steps:
       - run: echo "${{ github.event.pull_request.head.ref }}"
       - run: echo "${{ github.event.pull_request.base.ref }}"
