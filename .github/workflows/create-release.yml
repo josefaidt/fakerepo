@@ -5,11 +5,11 @@ on:
       type:
         type: choice
         description: 'Type of release'
-        options:
-          - major
-          - minor
-          - patch
+        options: # put in ascending order to not accidentally cut a "major" release PR
           - prerelease
+          - patch
+          - minor
+          - major
         required: true
       # version:
       #   description: 'Version to deploy (i.e. 0.8.0)'
