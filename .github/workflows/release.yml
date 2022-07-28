@@ -14,6 +14,7 @@ jobs:
           persist-credentials: true
       - id: version
         run: echo ::set-output name=version::${{ github.event.ref }}
+      - run: echo "::debug::${{ github.ref }}"
       - run: echo "::debug::${{ steps.version.outputs.version }}"
       - if: ${{ steps.version.outputs.version }}
         run: echo 'yes'
