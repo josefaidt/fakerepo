@@ -51,6 +51,8 @@ jobs:
           git add package.json
           git commit -m '[automated] release: ${{ steps.version.outputs.version }}'
       - run: git push origin ${{ steps.branch.outputs.name }}
-      - run: 'gh pr create --title "release: ${{ steps.version.outputs.version }}" --body "Automated PR created to release a new version of the project"'
+      - id: pr
+        run: 'gh pr create --title "release: ${{ steps.version.outputs.version }}" --body "Automated PR created to release a new version of the project"'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: echo '${{ steps.pr.outputs.result }}'
