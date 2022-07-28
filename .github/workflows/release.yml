@@ -1,8 +1,6 @@
 name: release
 on:
   push:
-    branches:
-      - main
     tags:
       - v*
 jobs:
@@ -15,6 +13,7 @@ jobs:
       - id: version
         run: echo ::set-output name=version::${{ github.event.ref }}
       - run: echo "::debug::${{ github.ref }}"
+      - run: echo "::debug::${{ github.event.ref }}"
       - run: echo "::debug::${{ steps.version.outputs.version }}"
       - if: ${{ steps.version.outputs.version }}
         run: echo 'yes'
@@ -22,4 +21,19 @@ jobs:
         run: echo 'yes'
       - if: contains(${{ steps.version.outputs.version }}, 'next')
         run: echo 'yes'
+      # - name: Create Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     release_name: Release ${{ github.ref }}
+      #     body: |
+      #       Changes in this Release
+      #       - First Change
+      #       - Second Change
+      #     draft: false
+      #     prerelease: false
       # - run: 'gh release create --target ${{ github.event.pull_request.head.ref }}'
+# https://github.com/orgs/community/discussions/26686#discussioncomment-3252850
