@@ -51,6 +51,8 @@ jobs:
           git commit -m '[automated] release ${{ steps.version.outputs.version }}'
       - run: git push origin ${{ steps.branch.outputs.name }}
       - run: 'gh pr create --title "release: ${{ steps.version.outputs.version }}" --label run-ci'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 # bumps version with `pnpm version...` (should this create the tag???)
 # if pnpm creates the tag, we need to push it to git _before_ running `gh release create...` to mitigate clashing version tags
 # or can set this to false https://docs.npmjs.com/cli/v8/commands/npm-version#git-tag-version
