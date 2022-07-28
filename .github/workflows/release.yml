@@ -9,8 +9,6 @@ jobs:
   release:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
-    permissions:
-      contents: write
     steps:
       - run: echo "${{ github.event.pull_request.head.ref }}"
       - run: echo "${{ github.event.pull_request.base.ref }}"
@@ -26,12 +24,19 @@ jobs:
           persist-credentials: true
       - name: prerelease
         if: ${{ contains(steps.tag.outputs.result, 'next') }}
-        run: gh release create ${{ steps.tag.outputs.result }} --generate-notes --prerelease
+        run: |
+          url=$(gh release create ${{ steps.tag.outputs.result }} --generate-notes --prerelease)
+          tag=$(echo "${url/releases\/tag/tree}")
+          echo ::notice title="release"::$url
+          echo ::notice title="tag"::$tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: release
+      - name: release # same thing as above but without `--prerelease`...
         if: ${{ !contains(steps.tag.outputs.result, 'next') }}
-        run: gh release create ${{ steps.tag.outputs.result }} --generate-notes
+        run: |
+          url=$(gh release create ${{ steps.tag.outputs.result }} --generate-notes)
+          tag=$(echo "${url/releases\/tag/tree}")
+          echo ::notice title="release"::$url
+          echo ::notice title="tag"::$tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-# https://github.com/orgs/community/discussions/26686#discussioncomment-3252850
