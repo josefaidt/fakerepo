@@ -30,6 +30,8 @@ jobs:
           then
             version=$(pnpm version ${{ github.event.inputs.type }})
           else
+            pnpm version ${{ github.event.inputs.type }} --preid next
+            echo $(git status)
             version=$(pnpm version ${{ github.event.inputs.type }} --preid next)
           fi
           echo "VERSION IS $version"
