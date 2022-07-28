@@ -17,7 +17,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          persist-credentials: true
+          persist-credentials: false
       - uses: pnpm/action-setup@v2.2.2
       - name: set git config for pnpm version, git push
         run: |
@@ -30,10 +30,10 @@ jobs:
           then
             version=$(pnpm version ${{ github.event.inputs.type }})
           else
-            pnpm version ${{ github.event.inputs.type }} --preid next
-            echo $(git status)
+            # pnpm version ${{ github.event.inputs.type }} --preid next
             version=$(pnpm version ${{ github.event.inputs.type }} --preid next)
           fi
+          echo 'STATUS $(git status)'
           echo "VERSION IS $version"
           echo "::set-output name=version::$version"
       - run: echo "::debug::version is ${{ steps.version.outputs.version }}"
