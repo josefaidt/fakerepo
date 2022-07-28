@@ -30,7 +30,7 @@ jobs:
           fi
       - run: echo "::debug::version is ${{ steps.version.outputs.version }}"
       - run: echo "::notice title="releasing"::${{ steps.version.outputs.version }}"
-      - if: ${{ !steps.version.outputs.version }}
+      - if: ${{ steps.version.outputs.version == '' }}
         run: echo "::error ::Invalid version"
       # - uses: actions/setup-node@v3  # is this needed???
       #   with:
