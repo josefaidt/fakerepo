@@ -27,10 +27,11 @@ jobs:
         run: |
           if [ ${{ github.event.inputs.type }} != prerelease ]
           then
-            echo "::set-output name=version::pnpm version ${{ github.event.inputs.type }} --no-git-tag-version)"
+            echo "::set-output name=version::$(pnpm version ${{ github.event.inputs.type }} --no-git-tag-version)"
           else
-            echo "::set-output name=version::pnpm version ${{ github.event.inputs.type }} --no-git-tag-version --preid next)"
+            echo "::set-output name=version::$(pnpm version ${{ github.event.inputs.type }} --no-git-tag-version --preid next)"
           fi
+      - run: echo "::debug::version is ${{ steps.version.output.version }}"
       - run: echo "::notice title="releasing"::${{ steps.version.output.version }}"
       # - uses: actions/setup-node@v3  # is this needed???
       #   with:
