@@ -47,10 +47,11 @@ jobs:
         run: echo "::set-output name=name::release/${{ steps.version.outputs.version }}"
       - name: Create release branch
         run: git checkout -b ${{ steps.branch.outputs.name }}
-      - name: add and commit changes
-        run: |
-          git add package.json
-          git commit -m '[automated] release ${{ steps.version.outputs.version }}'
+      # this is not required when pnpm is creating the git tag
+      # - name: add and commit changes
+      #   run: |
+      #     git add package.json
+      #     git commit -m '[automated] release ${{ steps.version.outputs.version }}'
       - run: git push origin ${{ steps.branch.outputs.name }}
       - run: 'gh pr create --title "release: ${{ steps.version.outputs.version }}" --body "Automated PR created to release a new version of the project" --label run-ci'
         env:
