@@ -59,7 +59,7 @@ jobs:
       - name: cdk-deploy-main
         run: pnpm cdk deploy
       - name: prerelease
-        if: ${{ env.IS_PRERELEASE }}
+        if: env.IS_PRERELEASE
         run: |
           url=$(gh release create ${{ env.TAG }} --generate-notes --prerelease)
           tag=$(echo "${url/releases\/tag/tree}")
@@ -68,7 +68,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: release # same thing as above but without `--prerelease`...
-        if: ${{ env.IS_PRERELEASE }}
+        if: env.IS_PRERELEASE
         run: |
           url=$(gh release create ${{ env.TAG }} --generate-notes)
           tag=$(echo "${url/releases\/tag/tree}")
