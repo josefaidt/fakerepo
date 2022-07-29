@@ -26,7 +26,7 @@ jobs:
     needs: verify-run
     outputs:
       tag: ${{ needs.verify-run.outputs.tag }}
-      is_prerelease: ${{ contains(needs.verify-run.outputs.tag, 'next') }}
+      is-prerelease: ${{ contains(needs.verify-run.outputs.tag, 'next') }}
     env:
       TAG: ${{ needs.verify-run.outputs.tag }}
       IS_PRERELEASE: ${{ contains(needs.verify-run.outputs.tag, 'next') }}
@@ -43,26 +43,26 @@ jobs:
   prerelease:
     runs-on: ubuntu-latest
     needs: setup
-    if: ${{ needs.setup.outputs.is_prerelease == 'true' }}
+    if: ${{ needs.setup.outputs.is-prerelease == 'true' }}
     environment: next
     steps:
-      - run: echo ${{ needs.setup.outputs.is_prerelease }}
+      - run: echo ${{ needs.setup.outputs.is-prerelease }}
       - uses: actions/checkout@v3
-      - uses: ./.github/workflows/release-env.yml
+      - uses: ./release-env.yml
         with:
           env: next
           version: ${{ needs.setup.outputs.tag }}
-          is-prerelease: ${{ needs.setup.outputs.is_prerelease }}
+          is-prerelease: ${{ needs.setup.outputs.is-prerelease }}
   release:
     runs-on: ubuntu-latest
     needs: setup
-    if: ${{ needs.setup.outputs.is_prerelease == 'false' }}
+    if: ${{ needs.setup.outputs.is-prerelease == 'false' }}
     environment: main
     steps:
-      - run: echo ${{ needs.setup.outputs.is_prerelease }}
+      - run: echo ${{ needs.setup.outputs.is-prerelease }}
       - uses: actions/checkout@v3
-      - uses: ./.github/workflows/release-env.yml
+      - uses: ./release-env.yml
         with:
           env: main
           version: ${{ needs.setup.outputs.tag }}
-          is-prerelease: ${{ needs.setup.outputs.is_prerelease }}
+          is-prerelease: ${{ needs.setup.outputs.is-prerelease }}
