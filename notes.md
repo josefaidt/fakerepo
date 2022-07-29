@@ -9,3 +9,9 @@ https://docs.github.com/en/repositories/releasing-projects-on-github/automatical
   - /shrug
 - should release branches be automatically fast-forwarded?
 - refactor: pull out prerelease ID `next` to an environment variable (we're manually checking for the "next" string in the version in other actions)
+
+trigger a run manually
+
+```sh
+gh workflow run create-release --field type=prerelease
+```
