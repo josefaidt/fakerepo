@@ -35,9 +35,9 @@ jobs:
           cache: 'pnpm'
       - run: pnpm install --frozen-lockfile
       - name: cdk synth
-        run: pnpm cdk synth --context github.events.inputs.env
+        run: pnpm cdk synth --context env=github.events.inputs.env
       - name: cdk deploy
-        run: pnpm cdk deploy --context github.events.inputs.env
+        run: pnpm cdk deploy --context env=github.events.inputs.env
       - name: release
         run: |
           if [ ${{ github.event.inputs.is-prerelease }} == true ]
