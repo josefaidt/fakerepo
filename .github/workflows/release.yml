@@ -8,15 +8,30 @@ on:
 env:
   AWS_REGION: us-east-1
 jobs:
+  verify-run:
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    outputs:
+      tag: ${{ steps.tag.outputs.result }}
+    steps:
+      - name: extract-tag-name
+        id: tag
+        uses: actions/github-script@0.2.0
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return context.payload.pull_request.title.replace(/release\: /, '');
   release:
     runs-on: ubuntu-latest
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    env:
+      TAG: ${{ needs.verify-run.outputs.tag }}
+      IS_PRERELEASE: ${{ contains(needs.verify-run.outputs.tag, 'next') }}
     permissions:
-      id-token: write
-      contents: write
+      id-token: write # for AWS Action to interact with GitHub's OIDC endpoint
+      contents: write # for gh CLI to create a release
     steps:
-      - run: echo "${{ github.event.pull_request.head.ref }}"
-      - run: echo "${{ github.event.pull_request.base.ref }}"
+      - run: echo "tag is ${{ env.TAG }}. is pre ${{ env.IS_PRERELEASE }}"
       - name: Extract tag name
         id: tag
         uses: actions/github-script@0.2.0

@@ -20,14 +20,12 @@ export class Stack extends cdk.Stack {
     super(scope, id, props)
 
     cdk.Tags.of(this).add('app:name', this.node.tryGetContext('name'))
-    cdk.Tags.of(this).add('app:env', this.node.tryGetContext('env'))
-    cdk.Tags.of(this).add('app:version', this.node.tryGetContext('version'))
 
     new GitHubActions(this, 'GitHubActions', {
       repo: 'josefaidt/fakerepo',
     })
 
-    new lambda.NodejsFunction(this, 'MyFunction', {
+    const fn = new lambda.NodejsFunction(this, 'MyFunction', {
       entry: fileURLToPath(new URL('./handler.ts', import.meta.url)),
       functionName: 'my-function',
       bundling: {
@@ -44,6 +42,9 @@ export class Stack extends cdk.Stack {
       },
       runtime: Runtime.NODEJS_16_X,
     })
+
+    cdk.Tags.of(fn).add('app:env', this.node.tryGetContext('env'))
+    cdk.Tags.of(fn).add('app:version', this.node.tryGetContext('version'))
   }
 }
 
