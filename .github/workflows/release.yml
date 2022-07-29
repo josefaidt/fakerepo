@@ -68,7 +68,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: release # same thing as above but without `--prerelease`...
-        if: ${{ !contains(env.TAG, 'next') }}
+        if: ${{ !env.IS_PRRELEASE }}
         run: |
           url=$(gh release create ${{ env.TAG }} --generate-notes)
           tag=$(echo "${url/releases\/tag/tree}")
