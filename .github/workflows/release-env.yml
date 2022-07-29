@@ -22,7 +22,7 @@ on:
 jobs:
   release-env:
     runs-on: ubuntu-latest
-    environment: ${{ github.event.inputs.env }}
+    environment: ${{ inputs.env }}
     permissions:
       id-token: write # for AWS Action to interact with GitHub's OIDC endpoint
       contents: write # for gh CLI to create a release, otherwise "read" for AWS Action
@@ -31,7 +31,7 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
-          aws-region: ${{ github.event.inputs.aws-region }}
+          aws-region: ${{ inputs.aws-region }}
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2.2.2
       - uses: actions/setup-node@v3
@@ -42,20 +42,20 @@ jobs:
       - name: cdk synth
         run: |
           pnpm cdk synth \
-            --context env=${{ github.event.inputs.env }} \
-            --context version=${{ github.event.inputs.version }}
+            --context env=${{ inputs.env }} \
+            --context version=${{ inputs.version }}
       - name: cdk deploy
         run: |
           pnpm cdk deploy \
-            --context env=${{ github.event.inputs.env }} \
-            --context version=${{ github.event.inputs.version }}
+            --context env=${{ inputs.env }} \
+            --context version=${{ inputs.version }}
       - name: release
         run: |
-          if [ ${{ github.event.inputs.is-prerelease }} == true ]
+          if [ ${{ inputs.is-prerelease }} == true ]
           then
-            url=$(gh release create ${{ github.event.inputs.version }} --generate-notes --prerelease)
+            url=$(gh release create ${{ inputs.version }} --generate-notes --prerelease)
           else
-            url=$(gh release create ${{ github.event.inputs.version }} --generate-notes)
+            url=$(gh release create ${{ inputs.version }} --generate-notes)
           fi
           tag=$(echo "${url/releases\/tag/tree}")
           echo ::notice title="release"::$url
