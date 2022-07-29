@@ -23,6 +23,7 @@ jobs:
             return context.payload.pull_request.title.replace(/release\: /, '');
   release:
     runs-on: ubuntu-latest
+    needs: verify-run
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
     env:
       TAG: ${{ needs.verify-run.outputs.tag }}
@@ -58,18 +59,18 @@ jobs:
       - name: cdk-deploy-main
         run: pnpm cdk deploy
       - name: prerelease
-        if: ${{ contains(steps.tag.outputs.result, 'next') }}
+        if: ${{ env.IS_PRERELEASE }}
         run: |
-          url=$(gh release create ${{ steps.tag.outputs.result }} --generate-notes --prerelease)
+          url=$(gh release create ${{ env.TAG }} --generate-notes --prerelease)
           tag=$(echo "${url/releases\/tag/tree}")
           echo ::notice title="release"::$url
           echo ::notice title="tag"::$tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: release # same thing as above but without `--prerelease`...
-        if: ${{ !contains(steps.tag.outputs.result, 'next') }}
+        if: ${{ !contains(env.TAG, 'next') }}
         run: |
-          url=$(gh release create ${{ steps.tag.outputs.result }} --generate-notes)
+          url=$(gh release create ${{ env.TAG }} --generate-notes)
           tag=$(echo "${url/releases\/tag/tree}")
           echo ::notice title="release"::$url
           echo ::notice title="tag"::$tag
