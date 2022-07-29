@@ -20,12 +20,6 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             return context.payload.pull_request.title.replace(/release\: /, '');
-  # setup:
-  #   runs-on: ubuntu-latest
-  #   needs: verify-run
-  #   outputs:
-  #     tag: ${{ needs.verify-run.outputs.tag }}
-  #     is-prerelease: ${{ contains(needs.verify-run.outputs.tag, 'next') }}
   prerelease:
     needs: verify-run
     if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == true }}
@@ -39,6 +33,6 @@ jobs:
     if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == false }}
     uses: ./.github/workflows/release-env.yml
     with:
-      env: next
+      env: main
       version: ${{ needs.verify-run.outputs.tag }}
       is-prerelease: false
