@@ -26,7 +26,7 @@ jobs:
     needs: verify-run
     outputs:
       tag: ${{ needs.verify-run.outputs.tag }}
-      is-prerelease: ${{ contains(needs.verify-run.outputs.tag, 'next') }}
+      is-prerelease: ${{ fromJSON(contains(needs.verify-run.outputs.tag, 'next')) }}
     env:
       TAG: ${{ needs.verify-run.outputs.tag }}
       IS_PRERELEASE: ${{ contains(needs.verify-run.outputs.tag, 'next') }}
