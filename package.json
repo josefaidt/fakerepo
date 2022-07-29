@@ -1,7 +1,7 @@
 {
   "name": "fakerepo",
   "type": "module",
-  "version": "0.0.10-next.21",
+  "version": "0.0.10-next.22",
   "packageManager": "pnpm@7.1.0",
   "devDependencies": {
     "@types/aws-lambda": "^8.10.101",
