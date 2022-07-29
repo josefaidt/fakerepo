@@ -46,9 +46,8 @@ jobs:
     if: ${{ needs.setup.outputs.is-prerelease == 'true' }}
     environment: next
     steps:
-      - run: echo ${{ needs.setup.outputs.is-prerelease }}
       - uses: actions/checkout@v3
-      - uses: ./release-env.yml
+      - uses: ../.github/workflows/release-env.yml
         with:
           env: next
           version: ${{ needs.setup.outputs.tag }}
@@ -59,9 +58,8 @@ jobs:
     if: ${{ needs.setup.outputs.is-prerelease == 'false' }}
     environment: main
     steps:
-      - run: echo ${{ needs.setup.outputs.is-prerelease }}
       - uses: actions/checkout@v3
-      - uses: ./release-env.yml
+      - uses: ../.github/workflows/release-env.yml
         with:
           env: main
           version: ${{ needs.setup.outputs.tag }}
