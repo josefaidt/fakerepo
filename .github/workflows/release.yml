@@ -48,7 +48,7 @@ jobs:
     steps:
       - run: echo ${{ needs.setup.outputs.is_prerelease }}
       - uses: actions/checkout@v3
-      - uses: .github/workflows/release-env.yml
+      - uses: ./.github/workflows/release-env.yml
         with:
           env: next
           version: ${{ needs.setup.outputs.tag }}
@@ -61,7 +61,7 @@ jobs:
     steps:
       - run: echo ${{ needs.setup.outputs.is_prerelease }}
       - uses: actions/checkout@v3
-      - uses: .github/workflows/release-env.yml
+      - uses: ./.github/workflows/release-env.yml
         with:
           env: main
           version: ${{ needs.setup.outputs.tag }}
