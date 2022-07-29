@@ -14,7 +14,6 @@ on:
         description: 'Determines if the release is a prerelease'
         type: boolean
         required: true
-
 jobs:
   release-env:
     runs-on: ubuntu-latest
@@ -28,6 +27,8 @@ jobs:
         with:
           persist-credentials: true
       - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
