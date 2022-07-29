@@ -5,6 +5,7 @@
 
 https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes#example-configuration
 
-how can you reference the output of a previous step without manually setting an "output"?
-
-should release branches be automatically fast-forwarded?
+- how can you reference the output of a previous step without manually setting an "output"?
+  - /shrug
+- should release branches be automatically fast-forwarded?
+- refactor: pull out prerelease ID `next` to an environment variable (we're manually checking for the "next" string in the version in other actions)

@@ -27,7 +27,7 @@ export class Stack extends cdk.Stack {
 
     const fn = new lambda.NodejsFunction(this, 'MyFunction', {
       entry: fileURLToPath(new URL('./handler.ts', import.meta.url)),
-      functionName: 'my-function',
+      functionName: `my-function-${this.node.tryGetContext('env')}`,
       bundling: {
         minify: true, // minify code, defaults to false
         sourceMap: true, // include source map, defaults to false
@@ -49,5 +49,5 @@ export class Stack extends cdk.Stack {
 }
 
 new Stack(app, 'Stack', {
-  stackName: `fakerepo-main`,
+  stackName: `fakerepo-${app.node.tryGetContext('env')}`,
 })
