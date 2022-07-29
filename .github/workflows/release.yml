@@ -13,6 +13,7 @@ jobs:
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
     outputs:
       tag: ${{ steps.tag.outputs.result }}
+      is-prerelease: ${{ contains(steps.tag.outputs.result, 'next') }}
     steps:
       - name: extract-tag-name
         id: tag
@@ -21,22 +22,12 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             return context.payload.pull_request.title.replace(/release\: /, '');
-  setup:
-    runs-on: ubuntu-latest
-    needs: verify-run
-    outputs:
-      tag: ${{ needs.verify-run.outputs.tag }}
-      is-prerelease: ${{ contains(needs.verify-run.outputs.tag, 'next') }}
-    # permissions for AWS Action to interact with GitHub's OIDC endpoint
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - uses: aws-actions/configure-aws-credentials@v1
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-          role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
-          aws-region: ${{ env.AWS_REGION }}
+  # setup:
+  #   runs-on: ubuntu-latest
+  #   needs: verify-run
+  #   outputs:
+  #     tag: ${{ needs.verify-run.outputs.tag }}
+  #     is-prerelease: ${{ contains(needs.verify-run.outputs.tag, 'next') }}
   prerelease:
     needs: setup
     if: ${{ fromJSON(needs.setup.outputs.is-prerelease) == true }}

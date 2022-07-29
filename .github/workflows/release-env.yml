@@ -14,13 +14,24 @@ on:
         description: 'Determines if the release is a prerelease'
         type: boolean
         required: true
+      aws-region:
+        description: 'AWS Region to deploy to'
+        type: string
+        required: false
+        default: 'us-east-1'
 jobs:
   release-env:
     runs-on: ubuntu-latest
     environment: ${{ github.events.inputs.env }}
     permissions:
-      contents: write # for gh CLI to create a release
+      id-token: write # for AWS Action to interact with GitHub's OIDC endpoint
+      contents: write # for gh CLI to create a release, otherwise "read" for AWS Action
     steps:
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
+          aws-region: ${{ github.events.inputs.aws-region }}
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2.2.2
       - uses: actions/setup-node@v3
