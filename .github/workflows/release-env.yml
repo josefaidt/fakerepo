@@ -1,0 +1,52 @@
+name: release-env
+on:
+  workflow_call:
+    inputs:
+      env:
+        description: 'Application environment (e.g. "next")'
+        type: string
+        required: true
+      version:
+        description: 'Version of the release'
+        type: string
+        required: true
+      is-prerelease:
+        description: 'Determines if the release is a prerelease'
+        type: boolean
+        required: true
+
+jobs:
+  release-env:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # for gh CLI to create a release
+    env:
+      TAG: ${{ github.events.inputs.version }}
+      IS_PRERELEASE: ${{ github.events.inputs.is-prerelease }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: true
+      - uses: pnpm/action-setup@v2.2.2
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: cdk synth
+        run: pnpm cdk synth --context github.events.inputs.env
+      - name: cdk deploy
+        run: pnpm cdk deploy --context github.events.inputs.env
+      - name: release
+        run: |
+          if [ ${{ github.event.inputs.is-prerelease }} == true ]
+          then
+            url=$(gh release create ${{ env.TAG }} --generate-notes --prerelease)
+          else
+            url=$(gh release create ${{ env.TAG }} --generate-notes)
+          fi
+          tag=$(echo "${url/releases\/tag/tree}")
+          echo ::notice title="release"::$url
+          echo ::notice title="tag"::$tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
