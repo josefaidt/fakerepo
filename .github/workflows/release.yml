@@ -47,7 +47,7 @@ jobs:
     environment: next
     steps:
       - uses: actions/checkout@v3
-      - uses: ./../.github/workflows/release-env.yml
+      - uses: josefaidt/fakerepo/.github/workflows/release-env.yml@main
         with:
           env: next
           version: ${{ needs.setup.outputs.tag }}
