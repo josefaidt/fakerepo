@@ -28,10 +28,10 @@ jobs:
     if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
     outputs:
       tag: ${{ needs.verify-run.outputs.tag }}
-      is-prerelease: ${{ contains(needs.verify-run.outputs.tag, env.PRERELEASE_ID) }}
+      is-prerelease: ${{ contains(needs.verify-run.outputs.tag, $PRERELEASE_ID) }}
     env:
       TAG: ${{ needs.verify-run.outputs.tag }}
-      IS_PRERELEASE: ${{ contains(needs.verify-run.outputs.tag, env.PRERELEASE_ID) }}
+      IS_PRERELEASE: ${{ contains(needs.verify-run.outputs.tag, $PRERELEASE_ID) }}
     # permissions for AWS Action to interact with GitHub's OIDC endpoint
     permissions:
       id-token: write
