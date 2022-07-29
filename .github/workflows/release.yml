@@ -47,7 +47,7 @@ jobs:
     environment: next
     steps:
       - uses: actions/checkout@v3
-      - uses: ../.github/workflows/release-env.yml
+      - uses: ./../.github/workflows/release-env.yml
         with:
           env: next
           version: ${{ needs.setup.outputs.tag }}
@@ -59,7 +59,7 @@ jobs:
     environment: main
     steps:
       - uses: actions/checkout@v3
-      - uses: ../.github/workflows/release-env.yml
+      - uses: ./../.github/workflows/release-env.yml
         with:
           env: main
           version: ${{ needs.setup.outputs.tag }}
