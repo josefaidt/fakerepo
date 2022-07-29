@@ -5,8 +5,6 @@ on:
       - main
     types:
       - closed
-env:
-  AWS_REGION: us-east-1
 jobs:
   verify-run:
     runs-on: ubuntu-latest
@@ -29,18 +27,18 @@ jobs:
   #     tag: ${{ needs.verify-run.outputs.tag }}
   #     is-prerelease: ${{ contains(needs.verify-run.outputs.tag, 'next') }}
   prerelease:
-    needs: setup
-    if: ${{ fromJSON(needs.setup.outputs.is-prerelease) == true }}
+    needs: verify-run
+    if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == true }}
     uses: ./.github/workflows/release-env.yml
     with:
       env: next
-      version: ${{ needs.setup.outputs.tag }}
+      version: ${{ needs.verify-run.outputs.tag }}
       is-prerelease: true
   release:
-    needs: setup
-    if: ${{ fromJSON(needs.setup.outputs.is-prerelease) == false }}
+    needs: verify-run
+    if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == false }}
     uses: ./.github/workflows/release-env.yml
     with:
       env: next
-      version: ${{ needs.setup.outputs.tag }}
+      version: ${{ needs.verify-run.outputs.tag }}
       is-prerelease: false
