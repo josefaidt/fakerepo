@@ -52,7 +52,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: setup
     permissions:
-      id-token: read
       contents: write # for gh CLI to create a release
     env:
       TAG: ${{ needs.setup.outputs.tag }}
