@@ -26,10 +26,7 @@ jobs:
     needs: verify-run
     outputs:
       tag: ${{ needs.verify-run.outputs.tag }}
-      is-prerelease: ${{ fromJSON(contains(needs.verify-run.outputs.tag, 'next')) }}
-    env:
-      TAG: ${{ needs.verify-run.outputs.tag }}
-      IS_PRERELEASE: ${{ contains(needs.verify-run.outputs.tag, 'next') }}
+      is-prerelease: ${{ contains(needs.verify-run.outputs.tag, 'next') }}
     # permissions for AWS Action to interact with GitHub's OIDC endpoint
     permissions:
       id-token: write
@@ -42,17 +39,17 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
   prerelease:
     needs: setup
-    if: ${{ needs.setup.outputs.is-prerelease == 'true' }}
+    if: ${{ fromJSON(needs.setup.outputs.is-prerelease) == true }}
     uses: ./.github/workflows/release-env.yml
     with:
       env: next
       version: ${{ needs.setup.outputs.tag }}
-      is-prerelease: ${{ needs.setup.outputs.is-prerelease }}
+      is-prerelease: true
   release:
     needs: setup
-    if: ${{ needs.setup.outputs.is-prerelease == 'false' }}
+    if: ${{ fromJSON(needs.setup.outputs.is-prerelease) == false }}
     uses: ./.github/workflows/release-env.yml
     with:
       env: next
       version: ${{ needs.setup.outputs.tag }}
-      is-prerelease: ${{ needs.setup.outputs.is-prerelease }}
+      is-prerelease: false
