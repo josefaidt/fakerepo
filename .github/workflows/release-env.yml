@@ -17,18 +17,17 @@ on:
 jobs:
   release-env:
     runs-on: ubuntu-latest
+    environment: ${{ github.events.inputs.env }}
     permissions:
       contents: write # for gh CLI to create a release
     env:
       TAG: ${{ github.events.inputs.version }}
       IS_PRERELEASE: ${{ github.events.inputs.is-prerelease }}
     steps:
-      # - uses: actions/checkout@v3
-      #   with:
-      #     persist-credentials: true
+      - uses: actions/checkout@v3
+        # with:
+        #   persist-credentials: true
       - uses: pnpm/action-setup@v2.2.2
-        with:
-          version: 7
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
