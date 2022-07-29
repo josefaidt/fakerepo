@@ -22,6 +22,21 @@ jobs:
       - uses: actions/checkout@v3
         with:
           persist-credentials: true
+      - uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
+          aws-region: ${{ env.AWS_REGION }}
+      - uses: pnpm/action-setup@v2.2.2
+      - uses: actions/setup-node@v3
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: cdk-synth-main
+        run: pnpm cdk synth
+      - name: cdk-deploy-main
+        run: pnpm cdk deploy
       - name: prerelease
         if: ${{ contains(steps.tag.outputs.result, 'next') }}
         run: |
