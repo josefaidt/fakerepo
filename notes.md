@@ -6,3 +6,5 @@
 https://docs.github.com/en/repositories/releasing-projects-on-github/automatically-generated-release-notes#example-configuration
 
 how can you reference the output of a previous step without manually setting an "output"?
+
+should release branches be automatically fast-forwarded?
