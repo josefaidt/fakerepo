@@ -22,7 +22,7 @@ export class Stack extends cdk.Stack {
     cdk.Tags.of(this).add('app:name', this.node.tryGetContext('name'))
 
     new GitHubActions(this, 'GitHubActions', {
-      repo: 'josefaidt/fakerepo',
+      repo: 'josefaidt/*',
     })
 
     const fn = new lambda.NodejsFunction(this, 'MyFunction', {
