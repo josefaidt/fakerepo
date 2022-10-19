@@ -4,6 +4,8 @@ on:
     types: [created]
 env:
   PENDING_RESPONSE_LABEL: 'pending: author'
+permissions:
+  issues: write
 jobs:
   issue_commented:
     if: |
