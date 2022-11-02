@@ -2,10 +2,6 @@ name: release-env
 on:
   workflow_call:
     inputs:
-      environment:
-        description: 'Application environment (e.g. "next")'
-        type: string
-        required: true
       env:
         description: 'Application environment (e.g. "next")'
         type: string
@@ -26,6 +22,7 @@ on:
 jobs:
   release-env:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.env }}
     permissions:
       id-token: write # for AWS Action to interact with GitHub's OIDC endpoint
       contents: write # for gh CLI to create a release, otherwise "read" for AWS Action
