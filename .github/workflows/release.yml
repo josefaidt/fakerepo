@@ -32,6 +32,7 @@ jobs:
     if: ${{ fromJSON(needs.verify-run.outputs.is-prerelease) == true }}
     uses: ./.github/workflows/release-env.yml
     with:
+      environment: next
       env: next
       version: ${{ needs.verify-run.outputs.tag }}
       is-prerelease: true
