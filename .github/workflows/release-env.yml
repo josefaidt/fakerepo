@@ -51,12 +51,7 @@ jobs:
             --context version=${{ inputs.version }}
       - name: release
         run: |
-          if [ ${{ inputs.is-prerelease }} == true ]
-          then
-            url=$(gh release create ${{ inputs.version }} --generate-notes --prerelease)
-          else
-            url=$(gh release create ${{ inputs.version }} --generate-notes)
-          fi
+          url=$(gh release edit ${{ inputs.version }} --draft=false)
           tag=$(echo "${url/releases\/tag/tree}")
           echo ::notice title="release"::$url
           echo ::notice title="tag"::$tag
