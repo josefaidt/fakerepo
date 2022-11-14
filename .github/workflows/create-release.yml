@@ -7,6 +7,9 @@ on:
         description: 'Type of release'
         options: # put in ascending order to not accidentally cut a "major" release PR
           - prerelease
+          - prepatch
+          - preminor
+          - premajor
           - patch
           - minor
           - major
@@ -23,16 +26,25 @@ jobs:
         run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email noreply@github.com
+      - name: is-prerelease
+        id: is-prerelease
+        run: |
+          is=false
+          if [[ ${{ github.event.inputs.type }} != pre* ]]
+          then
+            is=true
+          fi
+          echo "is-prerelease=$is" >> $GITHUB_OUTPUT
       - name: set-version
         id: version
         run: |
-          if [ ${{ github.event.inputs.type }} != prerelease ]
+          if [[ ${{ steps.is-prerelease.outputs.is-prerelease }} == true ]]
           then
             version=$(pnpm version ${{ github.event.inputs.type }} --no-git-tag-version)
           else
             version=$(pnpm version ${{ github.event.inputs.type }} --preid next --no-git-tag-version)
           fi
-          echo "::set-output name=version::$version"
+          echo "version=$version" >> $GITHUB_OUTPUT
       - run: echo "::debug::version is ${{ steps.version.outputs.version }}"
       - run: echo "::notice title="releasing"::${{ steps.version.outputs.version }}"
       - if: ${{ steps.version.outputs.version == '' }}
@@ -42,7 +54,7 @@ jobs:
       #     node-version-file: '.nvmrc'
       #     cache: 'pnpm'
       - id: branch
-        run: echo "::set-output name=name::release/${{ steps.version.outputs.version }}"
+        run: echo "name=release/${{ steps.version.outputs.version }}" >> $GITHUB_OUTPUT
       - name: Create release branch
         run: git checkout -b ${{ steps.branch.outputs.name }}
       # this is not required when pnpm is creating the git tag
@@ -51,13 +63,24 @@ jobs:
           git add package.json
           git commit -m '[automated] release: ${{ steps.version.outputs.version }}'
       - run: git push origin ${{ steps.branch.outputs.name }}
-      - id: pr
+      - name: create draft release
+        id: draft-release
         run: |
-          url=$(gh pr create --title "release: ${{ steps.version.outputs.version }}" --body "Automated PR created to release a new version of the project")
-          echo ::set-output name=link::$url
-
+          if [[ ${{ steps.is-prerelease.outputs.is-prerelease }} == true ]]
+          then
+            url=$(gh release create ${{ steps.version.outputs.version }} --generate-notes --prerelease --draft)
+          else
+            url=$(gh release create ${{ steps.version.outputs.version }} --generate-notes --draft)
+          fi
+          echo "release=$url" >> $GITHUB_OUTPUT
+      - name: create pull request
+        id: pr
+        run: |
+          body="Automated PR created to release a new version of the project\n$(gh release view ${{ steps.version.outputs.version }} --json body --jq .body)"
+          url=$(gh pr create --title "release: ${{ steps.version.outputs.version }}" --body $body)
+          echo "link=$url" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: echo '${{ steps.pr.outputs.link }}'
       - run: echo ::notice title="created"::${{ steps.pr.outputs.link }}
       - run: echo ::notice title="type"::${{ github.event.inputs.type }}
+      - run: echo ::notice title="draft release"::${{ steps.draft-release.outputs.url }}
