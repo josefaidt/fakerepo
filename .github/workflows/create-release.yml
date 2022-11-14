@@ -16,9 +16,11 @@ on:
         required: true
 jobs:
   create-release:
-    permissions:
-      pull-requests: write
-      contents: write
+    # permissions:
+    # needed to create release PR
+    # pull-requests: write
+    # needed to create draft release
+    # contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
