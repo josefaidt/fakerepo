@@ -83,7 +83,7 @@ jobs:
           echo "release=$url" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - run: sleep 20
+      - run: sleep 5
       - name: create pull request
         id: pr
         run: |
@@ -102,11 +102,11 @@ jobs:
       - run: echo ::notice title="created"::${{ steps.pr.outputs.link }}
       - run: echo ::notice title="type"::${{ github.event.inputs.type }}
       - run: echo ::notice title="draft release"::${{ steps.draft-release.outputs.url }}
-      # - name: cleanup
-      #   if: failure()
-      #   run: |
-      #     echo "attempt cleanup if this job failed"
-      #     git push origin --quiet --delete ${{ steps.branch.outputs.name }} && echo 'deleted branch' || true
-      #     gh release delete ${{ steps.version.outputs.version }} && echo 'deleted release' || true
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: cleanup
+        if: failure()
+        run: |
+          echo "attempt cleanup if this job failed"
+          git push origin --quiet --delete ${{ steps.branch.outputs.name }} && echo 'deleted branch' || true
+          gh release delete ${{ steps.version.outputs.version }} && echo 'deleted release' || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
