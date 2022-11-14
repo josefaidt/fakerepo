@@ -96,3 +96,5 @@ jobs:
           echo "attempt cleanup if this job failed"
           git branch -d ${{ steps.version.outputs.version }} || true
           gh release delete ${{ steps.version.outputs.version }} || true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
