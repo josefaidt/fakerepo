@@ -70,6 +70,7 @@ jobs:
       - name: create draft release
         id: draft-release
         run: |
+          echo $(gh release list)
           if [[ ${{ steps.is-prerelease.outputs.is-prerelease }} == true ]]
           then
             url=$(gh release create ${{ steps.version.outputs.version }} --generate-notes --draft --prerelease)
