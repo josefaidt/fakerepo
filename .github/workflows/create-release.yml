@@ -83,6 +83,7 @@ jobs:
           echo "release=$url" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: sleep 20
       - name: create pull request
         id: pr
         run: |
