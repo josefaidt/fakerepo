@@ -81,7 +81,8 @@ jobs:
       - name: create pull request
         id: pr
         run: |
-          body="Automated PR created to release a new version of the project\n$(gh release view ${{ steps.version.outputs.version }} --json body --jq .body)"
+          changes=$(gh release view ${{ steps.version.outputs.version }} --json body --jq .body)
+          body="Automated PR created to release a new version of the project\n$changes"
           url=$(gh pr create --title "release: ${{ steps.version.outputs.version }}" --body $body)
           echo "link=$url" >> $GITHUB_OUTPUT
         env:
