@@ -61,11 +61,12 @@ jobs:
       - name: create release branch
         run: git checkout -b ${{ steps.branch.outputs.name }}
       # this is not required when pnpm is creating the git tag
-      - name: add and commit changes
+      - name: add and commit changes to release branch
         run: |
           git add package.json
           git commit -m '[automated] release: ${{ steps.version.outputs.version }}'
-      - run: git push origin ${{ steps.branch.outputs.name }}
+      - name: push to release branch
+        run: git push origin ${{ steps.branch.outputs.name }}
       - name: create draft release
         id: draft-release
         run: |
@@ -82,9 +83,13 @@ jobs:
         id: pr
         run: |
           body_file=body.md
+          # get URL to this workflow run
           run="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          # output intro message to an ephemeral markdown file
           echo "_This pull request was automatically created by [GitHub Actions]($run)_" > $body_file
+          # output the generated release notes to an ephemeral markdown file
           gh release view ${{ steps.version.outputs.version }} --json body --jq .body >> $body_file
+          # get the pull request URL
           url=$(gh pr create --title "release: ${{ steps.version.outputs.version }}" --body-file $body_file)
           echo "link=$url" >> $GITHUB_OUTPUT
         env:
@@ -92,11 +97,11 @@ jobs:
       - run: echo ::notice title="created"::${{ steps.pr.outputs.link }}
       - run: echo ::notice title="type"::${{ github.event.inputs.type }}
       - run: echo ::notice title="draft release"::${{ steps.draft-release.outputs.url }}
-      - name: cleanup
-        if: failure()
-        run: |
-          echo "attempt cleanup if this job failed"
-          git push origin --delete ${{ steps.branch.outputs.name }} && echo 'deleted branch' || true
-          gh release delete ${{ steps.version.outputs.version }} && echo 'deleted release' || true
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: cleanup
+      #   if: failure()
+      #   run: |
+      #     echo "attempt cleanup if this job failed"
+      #     git push origin --quiet --delete ${{ steps.branch.outputs.name }} && echo 'deleted branch' || true
+      #     gh release delete ${{ steps.version.outputs.version }} && echo 'deleted release' || true
+      #   env:
+      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
