@@ -71,7 +71,7 @@ jobs:
         run: |
           if [[ ${{ steps.is-prerelease.outputs.is-prerelease }} == true ]]
           then
-            url=$(gh release create ${{ steps.version.outputs.version }} --generate-notes --prerelease --draft)
+            url=$(gh release create ${{ steps.version.outputs.version }} --generate-notes --draft --prerelease)
           else
             url=$(gh release create ${{ steps.version.outputs.version }} --generate-notes --draft)
           fi
@@ -95,7 +95,7 @@ jobs:
         if: failure()
         run: |
           echo "attempt cleanup if this job failed"
-          git push origin --delete ${{ steps.branch.outputs.name }} || true
-          gh release delete ${{ steps.version.outputs.version }} || true
+          git push origin --delete ${{ steps.branch.outputs.name }} && echo 'deleted branch' || true
+          gh release delete ${{ steps.version.outputs.version }} && echo 'deleted release' || true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
