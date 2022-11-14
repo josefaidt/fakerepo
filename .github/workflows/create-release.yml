@@ -16,6 +16,9 @@ on:
         required: true
 jobs:
   create-release:
+    permissions:
+      pull-requests: write
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -73,6 +76,8 @@ jobs:
             url=$(gh release create ${{ steps.version.outputs.version }} --generate-notes --draft)
           fi
           echo "release=$url" >> $GITHUB_OUTPUT
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: create pull request
         id: pr
         run: |
