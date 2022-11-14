@@ -43,9 +43,9 @@ jobs:
         run: |
           if [[ ${{ steps.is-prerelease.outputs.is-prerelease }} == true ]]
           then
-            version=$(pnpm version ${{ github.event.inputs.type }} --no-git-tag-version)
+            version=$(pnpm version ${{ github.event.inputs.type }} --no-git-tag-version --preid next)
           else
-            version=$(pnpm version ${{ github.event.inputs.type }} --preid next --no-git-tag-version)
+            version=$(pnpm version ${{ github.event.inputs.type }}  --no-git-tag-version)
           fi
           echo "version=$version" >> $GITHUB_OUTPUT
       - run: echo "::debug::version is ${{ steps.version.outputs.version }}"
