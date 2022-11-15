@@ -12,6 +12,9 @@ jobs:
       github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.event.pull_request.head.ref, 'release/')
     steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: false
       - uses: ./.github/actions/cleanup-discarded-release
         with:
           branch: ${{ github.head_ref }}
