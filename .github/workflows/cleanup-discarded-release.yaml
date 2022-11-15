@@ -7,9 +7,11 @@ on:
       - closed
 jobs:
   cleanup:
+    runs-on: ubuntu-latest
     if: |
       github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.event.pull_request.head.ref, 'release/')
-    uses: .github/actions/cleanup-discarded-release
-    with:
-      branch: ${{ github.head_ref }}
+    steps:
+      - uses: .github/actions/cleanup-discarded-release
+        with:
+          branch: ${{ github.head_ref }}
