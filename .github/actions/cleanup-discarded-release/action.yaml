@@ -1,10 +1,11 @@
 # used to extract the version from a release branch
 # "release/1.0.0-next.0" -> "1.0.0-next.0"
-name: extract-version-from-branch
-description: Extracts version from a branch name
+name: cleanup-discarded-release
+description: Cleans up discarded release artifacts such as branch and draft release
 inputs:
   github-token:
     description: GitHub token needed for ops
+    default: ${{ github.token }}
     required: true
   branch:
     description: branch name (e.g. head_ref)
@@ -17,7 +18,7 @@ runs:
         persist-credentials: true
     - uses: .github/actions/extract-version-from-branch
       with:
-        branch: ${{ github.head_ref }}
+        branch: ${{ inputs.branch }}
     - name: delete-release-branch
       run: git push origin --quiet --delete ${{ inputs.branch }} && echo 'deleted branch' || true
       shell: bash
