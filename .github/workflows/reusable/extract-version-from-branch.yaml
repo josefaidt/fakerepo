@@ -1,0 +1,25 @@
+# used to extract the version from a release branch
+# "release/1.0.0-next.0" -> "1.0.0-next.0"
+name: extract-version-from-branch
+on:
+  workflow_call:
+    inputs:
+      branch:
+        description: 'Release branch name'
+        type: string
+        required: true
+jobs:
+  extract-version-from-branch:
+    permissions: none
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.version.outputs.result }}
+    steps:
+      - name: extract-version
+        id: version
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return inputs.branch.replace(/release\: /, '');
+          result-encoding: string
