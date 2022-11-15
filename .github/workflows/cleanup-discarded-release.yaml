@@ -16,10 +16,10 @@ jobs:
         with:
           persist-credentials: false
       - id: version
-        uses: .github/actions/extract-version-from-branch
+        uses: ./.github/actions/extract-version-from-branch
         with:
           branch: ${{ github.head_ref }}
-      - uses: .github/actions/cleanup-discarded-release
+      - uses: ./.github/actions/cleanup-discarded-release
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ github.head_ref }}

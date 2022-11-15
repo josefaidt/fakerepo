@@ -103,7 +103,7 @@ jobs:
       - run: echo ::notice title="draft release"::${{ steps.draft-release.outputs.url }}
       - name: cleanup
         if: failure()
-        uses: .github/actions/cleanup-discarded-release
+        uses: ./.github/actions/cleanup-discarded-release
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ steps.branch.outputs.name }}
