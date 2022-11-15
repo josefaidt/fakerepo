@@ -7,6 +7,9 @@ inputs:
     description: GitHub token needed for ops
     default: ${{ github.token }}
     required: true
+  version:
+    description: version of the discarded release (e.g. v1.0.0-next.0)
+    required: true
   branch:
     description: branch name (e.g. head_ref)
     required: true
@@ -16,14 +19,11 @@ runs:
     - uses: actions/checkout@v3
       with:
         persist-credentials: true
-    - uses: .github/actions/extract-version-from-branch
-      with:
-        branch: ${{ inputs.branch }}
     - name: delete-release-branch
       run: git push origin --quiet --delete ${{ inputs.branch }} && echo 'deleted branch' || true
       shell: bash
     - name: delete-release-draft
-      run: gh release delete ${{ steps.version.outputs.result }} && echo 'deleted release' || true
+      run: gh release delete ${{ inputs.version }} && echo 'deleted release' || true
       shell: bash
       env:
         GH_TOKEN: ${{ inputs.github-token }}
