@@ -1,0 +1,7 @@
+- name: extract-tag-name
+        id: tag
+        uses: actions/github-script@6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return context.payload.pull_request.title.replace(/release\: /, '');

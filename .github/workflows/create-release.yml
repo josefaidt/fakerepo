@@ -16,11 +16,11 @@ on:
         required: true
 jobs:
   create-release:
-    # permissions:
-    # needed to create release PR
-    # pull-requests: write
-    # needed to create draft release
-    # contents: write
+    permissions:
+      # needed to create release PR
+      pull-requests: write
+      # needed to create draft release
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -72,8 +72,6 @@ jobs:
       - name: create draft release
         id: draft-release
         run: |
-          echo $(gh version)
-          echo $(gh release list)
           if [[ ${{ steps.is-prerelease.outputs.is-prerelease }} == true ]]
           then
             url=$(gh release create ${{ steps.version.outputs.version }} --generate-notes --draft --prerelease)
@@ -83,6 +81,7 @@ jobs:
           echo "release=$url" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # TODO: remove sleep https://github.com/cli/cli/issues/6599#issuecomment-1314562972
       - run: sleep 5
       - name: create pull request
         id: pr

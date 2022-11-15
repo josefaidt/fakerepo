@@ -1,0 +1,29 @@
+name: closed-release-cleanup
+on:
+  pull_request:
+    branches:
+      - 'release/**'
+    types:
+      - closed
+jobs:
+  cleanup-release:
+    permissions:
+      # needed to delete remote branches and draft releases
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: true
+      - run: echo "${{ github.head_ref }}"
+      - name: extract-version
+        id: version
+        uses: actions/github-script@6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return context.payload.pull_request.title.replace(/release\: /, '');
+      - name: delete-release-branch
+        run: git push origin --quiet --delete ${{ github.head_ref }} && echo 'deleted branch' || true
+      - name: delete-release-draft
+        run: gh release delete ${{ steps.version.outputs.version }} && echo 'deleted release' || true
