@@ -12,6 +12,6 @@ jobs:
       github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.event.pull_request.head.ref, 'release/')
     steps:
-      - uses: ./.github/actions/cleanup-discarded-release
+      - uses: ./.github/actions/cleanup-discarded-release/action.yaml
         with:
           branch: ${{ github.head_ref }}
