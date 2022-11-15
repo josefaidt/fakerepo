@@ -2,7 +2,7 @@ name: closed-release-cleanup
 on:
   pull_request:
     branches:
-      - 'release/**'
+      - main
     types:
       - closed
 jobs:
@@ -11,6 +11,7 @@ jobs:
       # needed to delete remote branches and draft releases
       contents: write
     runs-on: ubuntu-latest
+    if: startsWith(github.event.pull_request.head.ref, 'release/')
     steps:
       - uses: actions/checkout@v3
         with:
@@ -22,7 +23,7 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            return context.payload.pull_request.title.replace(/release\: /, '');
+            return context.payload.pull_request.head.ref.replace(/release\: /, '');
       - name: delete-release-branch
         run: git push origin --quiet --delete ${{ github.head_ref }} && echo 'deleted branch' || true
       - name: delete-release-draft
