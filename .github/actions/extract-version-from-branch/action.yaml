@@ -18,5 +18,5 @@ runs:
       uses: actions/github-script@v6
       with:
         script: |
-          return inputs.branch.replace(/release\: /, '');
+          return context.inputs.branch.replace(/release\: /, '');
         result-encoding: string
