@@ -78,7 +78,7 @@ jobs:
           else
             url=$(gh release create ${{ steps.version.outputs.version }} --generate-notes --draft)
           fi
-          echo "release=$url" >> $GITHUB_OUTPUT
+          echo "url=$url" >> $GITHUB_OUTPUT
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # TODO: remove sleep https://github.com/cli/cli/issues/6599#issuecomment-1314562972
