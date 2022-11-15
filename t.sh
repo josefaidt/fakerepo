@@ -3,3 +3,5 @@ echo "gh release ${IS_PRERELEASE:+--prerelease}"
 
 branch="release/v1.0.0"
 echo "${branch#release/}"
+
+echo 'hello changes'
