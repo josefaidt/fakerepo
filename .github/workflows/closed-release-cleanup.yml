@@ -6,16 +6,11 @@ on:
     types:
       - closed
 jobs:
-  verify-run:
-    # permissions:
-    #   # needed to delete remote branches and draft releases
-    #   contents: write
-    runs-on: ubuntu-latest
+  cleanup:
+    needs: verify-run
     if: |
       github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.event.pull_request.head.ref, 'release/')
-  cleanup:
-    needs: verify-run
     uses: ./.github/workflows/reusable/cleanup-discarded-release.yaml
     with:
       branch: ${{ github.head_ref }}
