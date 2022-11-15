@@ -1,0 +1,30 @@
+name: cleanup-discarded-release
+on:
+  workflow_call:
+    inputs:
+      branch:
+        description: 'Release branch name'
+        type: string
+        required: true
+jobs:
+  cleanup:
+    permissions:
+      # needed to delete remote branches and draft releases
+      contents: write
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          persist-credentials: true
+      - name: extract-version
+        id: version
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            return inputs.branch.replace(/release\: /, '');
+          result-encoding: string
+      - name: delete-release-branch
+        run: git push origin --quiet --delete ${{ inputs.branch }} && echo 'deleted branch' || true
+      - name: delete-release-draft
+        run: gh release delete ${{ steps.version.outputs.result }} && echo 'deleted release' || true

@@ -6,27 +6,16 @@ on:
     types:
       - closed
 jobs:
-  cleanup-release:
-    permissions:
-      # needed to delete remote branches and draft releases
-      contents: write
+  verify-run:
+    # permissions:
+    #   # needed to delete remote branches and draft releases
+    #   contents: write
     runs-on: ubuntu-latest
     if: |
       github.event.pull_request.head.repo.full_name == github.repository &&
       startsWith(github.event.pull_request.head.ref, 'release/')
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          persist-credentials: true
-      - run: echo "${{ github.head_ref }}"
-      - name: extract-version
-        id: version
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            return context.payload.pull_request.head.ref.replace(/release\: /, '');
-      - name: delete-release-branch
-        run: git push origin --quiet --delete ${{ github.head_ref }} && echo 'deleted branch' || true
-      - name: delete-release-draft
-        run: gh release delete ${{ steps.version.outputs.version }} && echo 'deleted release' || true
+  cleanup:
+    needs: verify-run
+    uses: ./.github/workflows/reusable/cleanup-discarded-release.yaml
+    with:
+      branch: ${{ github.head_ref }}
