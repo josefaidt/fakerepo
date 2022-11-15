@@ -15,8 +15,8 @@ runs:
   steps:
     - name: extract-version
       id: version
-      uses: actions/github-script@v6
-      with:
-        script: |
-          return context.inputs.branch.replace(/release\: /, '');
-        result-encoding: string
+      shell: bash
+      run: |
+        branch=${{ inputs.branch }}
+        version=${branch#release/}
+        echo "version=$version" >> $GITHUB_OUTPUT
