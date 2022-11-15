@@ -105,9 +105,8 @@ jobs:
         if: failure()
         uses: ./.github/actions/cleanup-discarded-release
         with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ steps.branch.outputs.name }}
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: cleanup
       #   if: failure()
       #   run: |

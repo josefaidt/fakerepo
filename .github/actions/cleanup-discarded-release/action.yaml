@@ -3,6 +3,9 @@
 name: extract-version-from-branch
 description: Extracts version from a branch name
 inputs:
+  github-token:
+    description: GitHub token needed for ops
+    required: true
   branch:
     description: branch name (e.g. head_ref)
     required: true
@@ -22,4 +25,4 @@ runs:
       run: gh release delete ${{ steps.version.outputs.result }} && echo 'deleted release' || true
       shell: bash
       env:
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ inputs.github-token }}
