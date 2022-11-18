@@ -33,25 +33,39 @@ jobs:
           role-session-name: ${{ secrets.AWS_ROLE_SESSION_NAME }}
           aws-region: ${{ inputs.aws-region }}
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2
       - uses: actions/setup-node@v3
         with:
           node-version-file: '.nvmrc'
           cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile --silent
+      - run: pnpm build:lib
       - name: cdk synth
         run: |
-          pnpm cdk synth \
+          pnpm --filter ./cdk run synth \
             --context env=${{ inputs.env }} \
-            --context version=${{ inputs.version }}
+            --context version=${{ inputs.version }} \
+            --quiet
       - name: cdk deploy
         run: |
-          pnpm cdk deploy \
+          pnpm --filter ./cdk run deploy \
             --context env=${{ inputs.env }} \
             --context version=${{ inputs.version }}
+        env:
+          VITE_DISCORD_GUILD_ID: ${{ secrets.VITE_DISCORD_GUILD_ID }}
+          VITE_NEXTAUTH_URL: ${{ secrets.VITE_NEXTAUTH_URL }}
+          VITE_HOST: ${{ secrets.VITE_HOST }}
       - name: release
         run: |
-          url=$(gh release edit ${{ inputs.version }} --draft=false)
+          # exit early when performing a sequential release (next -> main)
+          if [ ${{ inputs.env }} != main ]; then exit 0; fi
+          # otherwise proceed with creating GitHub release and git tag
+          if [ ${{ inputs.is-prerelease }} == true ]
+          then
+            url=$(gh release create ${{ inputs.version }} --generate-notes --prerelease)
+          else
+            url=$(gh release create ${{ inputs.version }} --generate-notes)
+          fi
           tag=$(echo "${url/releases\/tag/tree}")
           echo ::notice title="release"::$url
           echo ::notice title="tag"::$tag

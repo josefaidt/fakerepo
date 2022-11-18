@@ -108,11 +108,3 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           branch: ${{ steps.branch.outputs.name }}
           version: ${{ steps.version.outputs.version }}
-      # - name: cleanup
-      #   if: failure()
-      #   run: |
-      #     echo "attempt cleanup if this job failed"
-      #     git push origin --quiet --delete ${{ steps.branch.outputs.name }} && echo 'deleted branch' || true
-      #     gh release delete ${{ steps.version.outputs.version }} && echo 'deleted release' || true
-      #   env:
-      #     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

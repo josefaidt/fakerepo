@@ -1,0 +1,24 @@
+name: ensure-prisma-change-includes-migration
+on:
+  workflow_call:
+    # inputs:
+    # env:
+    #   description: 'Application environment (e.g. "next")'
+    #   type: string
+    #   required: true
+    # version:
+    #   description: 'Version of the release'
+    #   type: string
+    #   required: true
+    # is-prerelease:
+    #   description: 'Determines if the release is a prerelease'
+    #   type: boolean
+    #   required: true
+    # aws-region:
+    #   description: 'AWS Region to deploy to'
+    #   type: string
+    #   required: false
+    #   default: 'us-east-1'
+jobs:
+  if-change:
+    runs-on: ubuntu-latest
