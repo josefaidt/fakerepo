@@ -13,6 +13,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   pr-has-semver-label:
+    if: github.event.pull_request.draft == false
     name: pr-has-semver-label
     runs-on: ubuntu-latest
     steps:
