@@ -16,8 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - if: |
-          contains(github.event.pull_request.labels.*.name, 'semver:\ major') || 
-          contains(github.event.pull_request.labels.*.name, 'semver:\ minor') || 
-          contains(github.event.pull_request.labels.*.name, 'semver:\ patch')
+          contains(github.event.pull_request.labels.*.name, 'semver: major') || 
+          contains(github.event.pull_request.labels.*.name, 'semver: minor') || 
+          contains(github.event.pull_request.labels.*.name, 'semver: patch')
         run: exit 0
       - run: exit 1
