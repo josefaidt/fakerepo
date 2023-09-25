@@ -14,7 +14,12 @@ jobs:
   pr-has-semver-label:
     name: pr-has-semver-label
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        semver-label:
+          - 'semver:\ major'
+          - 'semver:\ minor'
+          - 'semver:\ patch'
     steps:
-      - if: startsWith(github.event.pull_request.labels.*.name, 'semver')
+      - if: contains(github.event.pull_request.labels.*.name, ${{ matrix.semver-label }})
         run: exit 0
-      - run: exit 1
