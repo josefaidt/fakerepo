@@ -14,6 +14,7 @@ jobs:
   pr-has-semver-label:
     name: pr-has-semver-label
     runs-on: ubuntu-latest
-    if: startsWith(github.event.pull_request.labels.*.name, 'semver')
     steps:
-      - run: exit 0
+      - if: startsWith(github.event.pull_request.labels.*.name, 'semver')
+        run: exit 0
+      - run: exit 1
