@@ -1,0 +1,16 @@
+name: pr-has-semver-label
+on:
+  pull_request_target:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+      - labeled
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    if: startsWith(github.event.pull_request.labels.*.name, 'semver')
