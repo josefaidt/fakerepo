@@ -5,8 +5,9 @@ on:
       - main
     types:
       - opened
-      - synchronize
       - labeled
+      - unlabeled
+      - ready_for_review
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
