@@ -20,5 +20,5 @@ jobs:
           contains(github.event.pull_request.labels.*.name, 'semver: minor') || 
           contains(github.event.pull_request.labels.*.name, 'semver: patch')
         run: exit 0
-      - if: ${{ !success() }}
+      - if: '!success()'
         run: exit 1
