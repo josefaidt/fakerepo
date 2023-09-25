@@ -21,13 +21,5 @@ jobs:
           contains(github.event.pull_request.labels.*.name, 'semver: minor') || 
           contains(github.event.pull_request.labels.*.name, 'semver: patch')
         run: exit 0
-  fail:
-    name: fail
-    runs-on: ubuntu-latest
-    needs: pr-has-semver-label
-    steps:
-      - if: ${{ always() && !needs.pr-has-semver-label.result }}
+      - if: ${{ steps.check.conclusion == 'skipped' }}
         run: exit 1
-      #  if: ${{ always() && !failure() && !cancelled() }}
-      #   needs: check
-      #   run: exit 1
