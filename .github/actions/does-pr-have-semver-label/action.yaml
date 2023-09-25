@@ -1,0 +1,17 @@
+# used to extract the version from a semver label
+name: does-pr-have-semver-label
+description: Checks if PR has a semver label
+runs:
+  using: 'composite'
+  steps:
+    - id: check
+      shell: bash
+      if: |
+        contains(github.event.pull_request.labels.*.name, 'semver: major') || 
+        contains(github.event.pull_request.labels.*.name, 'semver: minor') || 
+        contains(github.event.pull_request.labels.*.name, 'semver: patch')
+      run: exit 0
+    - id: exit
+      if: ${{ steps.check.conclusion == 'skipped' }}
+      shell: bash
+      run: exit 1
