@@ -24,6 +24,12 @@ runs:
             throw new Error('Cannot have multiple semver labels')
           }
           return semverLabels[0].name
+    # handle errors and surface to GitHub
+    - uses: actions/github-script@v6
+      if: ${{ failure() }}
+      with:
+        script: |
+          core.setFailed(error.message)
     - uses: actions/github-script@v6
       id: get-bump
       if: ${{ success() }}
