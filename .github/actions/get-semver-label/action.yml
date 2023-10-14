@@ -29,5 +29,5 @@ runs:
       if: ${{ success() }}
       with:
         script: |
-          const labelName = context.steps["get-label"].outputs.result
+          const labelName = steps["get-label"].outputs.result
           return labelName.replace('semver: ', '')
