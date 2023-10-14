@@ -5,6 +5,9 @@ outputs:
   semver-label:
     description: Semver label name
     value: ${{ steps.get-label.outputs.result }}
+  semver-bump:
+    description: Semver bump type
+    value: ${{ steps.get-label.outputs.result }}
 runs:
   using: 'composite'
   steps:
@@ -21,3 +24,10 @@ runs:
             throw new Error('Cannot have multiple semver labels')
           }
           return semverLabels[0].name
+    - uses: actions/github-script@v6
+      id: get-bump
+      if: ${{ success() }}
+      with:
+        script: |
+          const labelName = context.payload.steps["get-label"].outputs.result
+          return labelName.replace('semver: ', '')
