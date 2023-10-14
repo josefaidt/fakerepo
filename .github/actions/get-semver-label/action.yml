@@ -13,8 +13,11 @@ runs:
       with:
         script: |
           const labels = context.payload.pull_request.labels
-          const semverLabels = labels.filter(label => label.startsWith('semver:'))
+          const semverLabels = labels.filter(label => label.name.startsWith('semver:'))
+          if (semverLabels.length === 0) {
+            throw new Error('No semver label found')
+          }
           if (semverLabels.length > 1) {
             throw new Error('Cannot have multiple semver labels')
           }
-          return semverLabels[0]
+          return semverLabels[0].name
