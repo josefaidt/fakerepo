@@ -22,8 +22,9 @@ jobs:
           persist-credentials: false
           sparse-checkout: |
             .github
-      - id: get-semver-label
+      - name: Does PR have a single semver label?
+        id: get-semver-label
         uses: ./.github/actions/get-semver-label
-      - id: set-semver-label
+      - id: set-semver-label-output
         if: ${{ success() }}
-        run: echo "::set-output name=semver-label::${{ steps.get-semver-label.outputs.semver-label }}"
+        run: echo "semver-label=${{ steps.get-semver-label.outputs.semver-label }}" >> $GITHUB_OUTPUT
