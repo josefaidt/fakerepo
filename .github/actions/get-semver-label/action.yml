@@ -1,0 +1,20 @@
+# used to extract the version from a semver label
+name: get-semver-label
+description: Gets semver label from PR event
+outputs:
+  semver-label:
+    description: Semver label name
+    value: ${{ steps.get-label.outputs.result }}
+runs:
+  using: 'composite'
+  steps:
+    - uses: actions/github-script@v6
+      id: get-label
+      with:
+        script: |
+          const labels = context.payload.pull_request.labels
+          const semverLabels = labels.filter(label => label.startsWith('semver:'))
+          if (semverLabels.length > 1) {
+            throw new Error('Cannot have multiple semver labels')
+          }
+          return semverLabels[0]

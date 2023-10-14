@@ -22,4 +22,8 @@ jobs:
           persist-credentials: false
           sparse-checkout: |
             .github
-      - uses: ./.github/actions/does-pr-have-semver-label
+      - id: get-semver-label
+        uses: ./.github/actions/get-semver-label
+      - id: set-semver-label
+        if: ${{ success() }}
+        run: echo "::set-output name=semver-label::${{ steps.get-semver-label.outputs.semver-label }}"
