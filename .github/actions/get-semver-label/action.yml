@@ -27,7 +27,8 @@ runs:
     - uses: actions/github-script@v6
       id: get-bump
       if: ${{ success() }}
+      env:
+        LABEL_NAME: ${{ steps.get-label.outputs.result }}
       with:
         script: |
-          const labelName = "${{ steps.get-label.outputs.result }}"
-          return labelName.replace('semver: ', '')
+          return process.env.LABEL_NAME.replace('semver: ', '')
