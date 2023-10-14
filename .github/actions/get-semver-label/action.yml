@@ -7,7 +7,7 @@ outputs:
     value: ${{ steps.get-label.outputs.result }}
   semver-bump:
     description: Semver bump type
-    value: ${{ steps.get-label.outputs.result }}
+    value: ${{ steps.get-bump.outputs.result }}
 runs:
   using: 'composite'
   steps:
