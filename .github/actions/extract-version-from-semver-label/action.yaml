@@ -1,0 +1,22 @@
+# used to extract the version from a semver label
+# "semver: patch" -> "patch"
+name: extract-version-from-semver-label
+description: Extracts version from semver label
+inputs:
+  label_name:
+    description: 'semver label name (e.g. "semver: patch")'
+    required: true
+outputs:
+  version:
+    description: extracted version
+    value: ${{ steps.extract-version.outputs.version }}
+runs:
+  using: 'composite'
+  steps:
+    - name: extract-version
+      id: extract-version
+      shell: bash
+      run: |
+        label_name=${{ inputs.label_name }}
+        version=${label_name#semver\:\ }
+        echo "version=$version" >> $GITHUB_OUTPUT
