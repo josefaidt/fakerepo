@@ -18,10 +18,10 @@ runs:
           const labels = context.payload.pull_request.labels
           const semverLabels = labels.filter(label => label.name.startsWith('semver:'))
           if (semverLabels.length === 0) {
-            core.setFailed('No semver label found')
+            return core.setFailed('No semver label found')
           }
           if (semverLabels.length > 1) {
-            core.setFailed('Cannot have multiple semver labels')
+            return core.setFailed('Cannot have multiple semver labels')
           }
           return semverLabels[0].name
     - uses: actions/github-script@v6
